@@ -1,10 +1,12 @@
 package com.example.criminalintent;
 
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -55,8 +58,9 @@ public class CrimeListFragment extends Fragment {
         public void bind(Crime crime) {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
-            mDateTextView.setText(mCrime.getDate().toString());
-
+            Date date = mCrime.getDate();
+            String format = DateFormat.getMediumDateFormat(getActivity()).format(date);
+            mDateTextView.setText(format);
         }
 
         @Override
@@ -67,13 +71,21 @@ public class CrimeListFragment extends Fragment {
     }
 
     private class NormalCrimeHolder extends CrimeHolder {
+        private final ImageView mSolvedImageView;
 
         public NormalCrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
 
+            mSolvedImageView = itemView.findViewById(R.id.crime_solved);
+
         }
 
+        @Override
+        public void bind(Crime crime) {
+            super.bind(crime);
+            mSolvedImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
 
+        }
     }
 
     private class SeriousCrimeHolder extends CrimeHolder {
